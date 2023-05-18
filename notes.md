@@ -10,3 +10,6 @@ https://github.com/protocolbuffers/protobuf/blob/main/examples/go/cmd/add_person
 https://github.com/golang/protobuf/blob/master/protoc-gen-go/grpc/grpc.go
 
 https://github.com/golang/protobuf
+
+- demo
+https://www.youtube.com/watch?v=BdzYdN_Zd9Q
