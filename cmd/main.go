@@ -42,3 +42,9 @@ func main() {
 	<-done
 	fmt.Println("timer done")
 }
+
+type pb struct {
+	timerName        string
+	timestampSent    time.Time
+	secondsRemaining int
+}

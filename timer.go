@@ -1,6 +1,10 @@
 package stgo
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 const (
 	secondsPerMinute = 60
@@ -8,15 +12,18 @@ const (
 )
 
 type CountdownTimerConfig struct {
-	Hours   int64
-	Minutes int64
-	Seconds int64
+	Name    string `json:"name"`
+	Hours   int64  `json:"hours"`
+	Minutes int64  `json:"minutes"`
+	Seconds int64  `json:"seconds"`
 }
 
 type countdownTimer struct {
-	cnf              CountdownTimerConfig
-	InitialSeconds   int64
-	RemainingSeconds int64
+	cnf              CountdownTimerConfig `json:"-"`
+	Id               uuid.UUID            `json:"id"`
+	Name             string               `json:"name"`
+	InitialSeconds   int64                `json:"initialSeconds"`
+	RemainingSeconds int64                `json:"remainingSeconds"`
 	cancelC          chan bool
 	restartC         chan bool
 	pauseC           chan bool
@@ -26,6 +33,8 @@ type countdownTimer struct {
 
 func NewCountdownTimer(cnf CountdownTimerConfig) countdownTimer {
 	return countdownTimer{
+		Id:               uuid.New(),
+		Name:             cnf.Name,
 		cnf:              cnf,
 		InitialSeconds:   secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
 		RemainingSeconds: secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),

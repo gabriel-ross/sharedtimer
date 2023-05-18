@@ -1,0 +1,13 @@
+syntax = "proto3";
+package stgo;
+
+import "google/protobuf/timestamp.proto"
+option go_package = "github.com/gabriel-ross/stgo/pb"
+
+message Message {
+    string body = 1;
+}
+
+service TimerService {
+    rpc GetTimer(Message) returns (Message) {}
+}
