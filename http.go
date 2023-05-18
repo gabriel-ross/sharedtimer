@@ -26,7 +26,6 @@ func (svr *server) handleCreateTimer() http.HandlerFunc {
 
 func (svr *server) handleListTimers() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//
 	}
 }
 
