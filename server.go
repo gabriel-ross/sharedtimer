@@ -43,5 +43,5 @@ func (svr *server) Run() error {
 }
 
 func (svr *server) OnShutdown() {
-	//
+	// TODO: store all timers in datastore
 }
