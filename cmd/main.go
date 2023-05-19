@@ -2,49 +2,26 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"os"
 
 	"github.com/gabriel-ross/stgo"
 )
 
+var (
+	PORT         = ""
+	DEFAULT_PORT = "8080"
+)
+
 func main() {
-	t := stgo.NewCountdownTimer(stgo.CountdownTimerConfig{
-		Hours:   1,
-		Minutes: 10,
-		Seconds: 10,
+	loadEnv()
+	s := stgo.NewServer(stgo.ServerConfig{
+		PORT: PORT,
 	})
-
-	done := make(chan bool)
-	go func() {
-		t.Run()
-		done <- true
-	}()
-
-	time.Sleep(2 * time.Second)
-	fmt.Println(t.Remaining())
-	time.Sleep(2 * time.Second)
-	fmt.Println(t.Remaining())
-	t.Pause()
-	time.Sleep(2 * time.Second)
-	fmt.Println(t.Remaining())
-	t.Resume()
-	time.Sleep(2 * time.Second)
-	fmt.Println(t.Remaining())
-	time.Sleep(time.Second)
-	t.Restart()
-	time.Sleep(time.Second)
-	fmt.Println(t.Remaining())
-	t.Cancel()
-
-	// TODO: ensure restart is working
-	// TODO: cancel is holding
-
-	<-done
-	fmt.Println("timer done")
+	fmt.Println(s.Run())
 }
 
-type pb struct {
-	timerName        string
-	timestampSent    time.Time
-	secondsRemaining int
+func loadEnv() {
+	if PORT = os.Getenv("PORT"); PORT == "" {
+		PORT = DEFAULT_PORT
+	}
 }

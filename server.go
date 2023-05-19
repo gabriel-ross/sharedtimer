@@ -1,13 +1,11 @@
 package stgo
 
 import (
-	"log"
-	"net"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
-	"google.golang.org/grpc"
 )
 
 type ServerConfig struct {
@@ -21,11 +19,15 @@ type server struct {
 }
 
 func NewServer(cnf ServerConfig) server {
-	return server{
+	s := server{
 		cnf:    cnf,
 		router: chi.NewRouter(),
 		timers: map[uuid.UUID]*countdownTimer{},
 	}
+
+	s.router.Mount("/", s.Routes())
+
+	return s
 }
 
 func (svr *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -33,17 +35,6 @@ func (svr *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (svr *server) Run() error {
+	fmt.Printf("running server on port %s\n", svr.cnf.PORT)
 	return http.ListenAndServe(":"+svr.cnf.PORT, svr)
-}
-
-func foo() {
-	lis, err := net.Listen("tcp", ":9090")
-	if err != nil {
-		log.Fatalf("Failed to listen on port 9090: %v", err)
-	}
-
-	svr := grpc.NewServer()
-	if err := svr.Serve(lis); err != nil {
-		log.Fatalf("failed to serve gRPC server: %v", err)
-	}
 }
