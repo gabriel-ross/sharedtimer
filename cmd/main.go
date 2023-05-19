@@ -18,6 +18,7 @@ func main() {
 		PORT: PORT,
 	})
 	fmt.Println(s.Run())
+	s.OnShutdown()
 }
 
 func loadEnv() {

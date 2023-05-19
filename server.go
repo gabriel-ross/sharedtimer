@@ -27,6 +27,9 @@ func NewServer(cnf ServerConfig) server {
 
 	s.router.Mount("/", s.Routes())
 
+	// TODO: load all timers from datastore into memory
+	// TODO: run all timers asynchronously if they weren't paused
+
 	return s
 }
 
@@ -37,4 +40,8 @@ func (svr *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (svr *server) Run() error {
 	fmt.Printf("running server on port %s\n", svr.cnf.PORT)
 	return http.ListenAndServe(":"+svr.cnf.PORT, svr)
+}
+
+func (svr *server) OnShutdown() {
+	//
 }

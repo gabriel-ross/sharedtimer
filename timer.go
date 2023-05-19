@@ -19,30 +19,45 @@ type CountdownTimerConfig struct {
 }
 
 type countdownTimer struct {
-	cnf              CountdownTimerConfig `json:"-"`
-	Id               uuid.UUID            `json:"id"`
-	Name             string               `json:"name"`
-	InitialSeconds   int64                `json:"initialSeconds"`
-	RemainingSeconds int64                `json:"remainingSeconds"`
+	Id               uuid.UUID `json:"id"`
+	Name             string    `json:"name"`
+	InitialSeconds   int64     `json:"initialSeconds"`
+	RemainingSeconds int64     `json:"remainingSeconds"`
+	Paused           bool      `json:"paused"`
+	cnf              CountdownTimerConfig
 	cancelC          chan bool
 	restartC         chan bool
 	pauseC           chan bool
 	resumeC          chan bool
-	paused           bool
 }
 
 func NewCountdownTimer(cnf CountdownTimerConfig) countdownTimer {
 	return countdownTimer{
 		Id:               uuid.New(),
 		Name:             cnf.Name,
-		cnf:              cnf,
 		InitialSeconds:   secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
 		RemainingSeconds: secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
+		Paused:           false,
+		cnf:              cnf,
 		cancelC:          make(chan bool),
 		restartC:         make(chan bool),
 		pauseC:           make(chan bool),
 		resumeC:          make(chan bool),
-		paused:           false,
+	}
+}
+
+func LoadCountdownTimer(t countdownTimer) countdownTimer {
+	return countdownTimer{
+		Id:               t.Id,
+		Name:             t.Name,
+		InitialSeconds:   t.InitialSeconds,
+		RemainingSeconds: t.RemainingSeconds,
+		Paused:           t.Paused,
+		cnf:              t.cnf,
+		cancelC:          make(chan bool),
+		restartC:         make(chan bool),
+		pauseC:           make(chan bool),
+		resumeC:          make(chan bool),
 	}
 }
 
@@ -78,7 +93,7 @@ func (t *countdownTimer) Restart() {
 }
 
 func (t *countdownTimer) Pause() {
-	t.paused = true
+	t.Paused = true
 	t.pauseC <- true
 }
 
@@ -87,9 +102,9 @@ func (t *countdownTimer) Resume() {
 }
 
 func (t *countdownTimer) unpause() {
-	if t.paused {
+	if t.Paused {
 		t.resumeC <- true
-		t.paused = false
+		t.Paused = false
 	}
 }
 
