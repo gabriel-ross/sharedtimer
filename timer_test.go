@@ -1,4 +1,4 @@
-package stgo
+package sharedtimer
 
 import (
 	"testing"

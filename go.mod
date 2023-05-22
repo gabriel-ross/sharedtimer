@@ -1,4 +1,4 @@
-module github.com/gabriel-ross/stgo
+module github.com/gabriel-ross/sharedtimer
 
 go 1.20
 

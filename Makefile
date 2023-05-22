@@ -1,10 +1,10 @@
 npm-dl:
-	cd ui
+	cd ./client/ui
 	npm install
 
 ui-run:
-	cd ui
+	cd ./client/ui
 	npm start
 
 server-run:
-	go run cmd/main.go
+	go run ./cmd/main.go

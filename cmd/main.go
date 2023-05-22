@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gabriel-ross/stgo"
+	"github.com/gabriel-ross/sharedtimer"
 )
 
 var (
@@ -14,7 +14,7 @@ var (
 
 func main() {
 	loadEnv()
-	s := stgo.NewServer(stgo.ServerConfig{
+	s := sharedtimer.NewServer(sharedtimer.ServerConfig{
 		PORT: PORT,
 	})
 	fmt.Println(s.Run())
