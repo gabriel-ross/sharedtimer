@@ -8,3 +8,7 @@ ui-run:
 
 server-run:
 	go run ./cmd/main.go
+
+tauri-run:
+	cd client/sharedtimer-client
+	npm run tauri dev
