@@ -62,8 +62,9 @@ func LoadCountdownTimer(t countdownTimer) countdownTimer {
 }
 
 func (t *countdownTimer) Run() {
+	t.Paused = false
 	tick := time.NewTicker(time.Second)
-	for {
+	for t.RemainingSeconds > 0 {
 		select {
 		case <-t.cancelC:
 			return
@@ -73,11 +74,7 @@ func (t *countdownTimer) Run() {
 			<-t.resumeC
 		case <-t.resumeC: // dump redundant resume calls
 		case <-tick.C:
-			if t.RemainingSeconds > 0 {
-				t.RemainingSeconds--
-			} else {
-				return
-			}
+			t.RemainingSeconds--
 		}
 	}
 }
