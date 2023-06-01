@@ -48,6 +48,16 @@ func (cl *PostgresClient) CreateUser(id string) error {
 	return nil
 }
 
+func (cl *PostgresClient) GetUser(id string) (string, error) {
+	var userID string
+	queryStr := "SELECT * FROM \"Users\" WHERE userID=$1"
+	err := cl.db.QueryRow(queryStr, id).Scan(&userID)
+	if err != nil {
+		return "", err
+	}
+	return userID, nil
+}
+
 func (cl *PostgresClient) DeleteUser(id string) error {
 	queryStr := "DELETE FROM \"Users\" WHERE userID=$1"
 	_, err := cl.db.Exec(queryStr, id)
