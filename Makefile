@@ -1,14 +1,8 @@
-npm-dl:
-	cd ./client/ui
-	npm install
-
-ui-run:
-	cd ./client/ui
-	npm start
-
-server-run:
+server-up:
 	go run ./cmd/main.go
 
-tauri-run:
-	cd client/sharedtimer-client
-	npm run tauri dev
+tauri-up:
+	cargo tauri dev
+	
+npm-install:
+	npm install
