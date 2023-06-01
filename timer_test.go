@@ -16,7 +16,7 @@ const (
 
 // Expected run time: ~6 seconds
 func TestTimer(t *testing.T) {
-	timer := NewCountdownTimer(CountdownTimerConfig{
+	timer := NewTimer(TimerConfig{
 		Hours:   hours,
 		Minutes: minutes,
 		Seconds: seconds,

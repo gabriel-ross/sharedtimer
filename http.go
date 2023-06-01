@@ -10,14 +10,14 @@ import (
 func (svr *server) handleCreateTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
-		cnf := CountdownTimerConfig{}
+		cnf := TimerConfig{}
 		err = cnf.Bind(r)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		t := NewCountdownTimer(cnf)
+		t := NewTimer(cnf)
 		svr.timers[t.Id] = &t
 
 		WriteJSON(w, NewResponse(t), http.StatusOK)
@@ -76,7 +76,7 @@ func (svr *server) handleUpdateTimer() http.HandlerFunc {
 			return
 		}
 
-		t := NewCountdownTimer(cnf)
+		t := NewTimer(cnf)
 		t.Id = timer.Id
 		svr.timers[t.Id] = &t
 

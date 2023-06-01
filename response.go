@@ -8,13 +8,13 @@ import (
 
 type Response struct {
 	Timestamp time.Time `json:"timestamp"`
-	countdownTimer
+	Timer
 }
 
-func NewResponse(t countdownTimer) Response {
+func NewResponse(t Timer) Response {
 	return Response{
-		Timestamp:      time.Now(),
-		countdownTimer: t,
+		Timestamp: time.Now(),
+		Timer:     t,
 	}
 }
 

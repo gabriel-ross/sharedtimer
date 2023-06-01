@@ -15,14 +15,14 @@ type ServerConfig struct {
 type server struct {
 	cnf    ServerConfig
 	router chi.Router
-	timers map[uuid.UUID]*countdownTimer
+	timers map[uuid.UUID]*Timer
 }
 
 func NewServer(cnf ServerConfig) server {
 	s := server{
 		cnf:    cnf,
 		router: chi.NewRouter(),
-		timers: map[uuid.UUID]*countdownTimer{},
+		timers: map[uuid.UUID]*Timer{},
 	}
 
 	s.router.Mount("/", s.Routes())

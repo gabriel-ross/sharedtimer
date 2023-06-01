@@ -11,28 +11,28 @@ const (
 	secondsPerHour   = 60 * secondsPerMinute
 )
 
-type CountdownTimerConfig struct {
+type TimerConfig struct {
 	Name    string `json:"name"`
 	Hours   int64  `json:"hours"`
 	Minutes int64  `json:"minutes"`
 	Seconds int64  `json:"seconds"`
 }
 
-type countdownTimer struct {
+type Timer struct {
 	Id               uuid.UUID `json:"id"`
 	Name             string    `json:"name"`
 	InitialSeconds   int64     `json:"initialSeconds"`
 	RemainingSeconds int64     `json:"remainingSeconds"`
 	Paused           bool      `json:"paused"`
-	cnf              CountdownTimerConfig
+	cnf              TimerConfig
 	cancelC          chan bool
 	restartC         chan bool
 	pauseC           chan bool
 	resumeC          chan bool
 }
 
-func NewCountdownTimer(cnf CountdownTimerConfig) countdownTimer {
-	return countdownTimer{
+func NewTimer(cnf TimerConfig) Timer {
+	return Timer{
 		Id:               uuid.New(),
 		Name:             cnf.Name,
 		InitialSeconds:   secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
@@ -46,23 +46,17 @@ func NewCountdownTimer(cnf CountdownTimerConfig) countdownTimer {
 	}
 }
 
-func LoadCountdownTimer(t countdownTimer) countdownTimer {
-	return countdownTimer{
-		Id:               t.Id,
-		Name:             t.Name,
-		InitialSeconds:   t.InitialSeconds,
-		RemainingSeconds: t.RemainingSeconds,
-		Paused:           t.Paused,
-		cnf:              t.cnf,
-		cancelC:          make(chan bool),
-		restartC:         make(chan bool),
-		pauseC:           make(chan bool),
-		resumeC:          make(chan bool),
-	}
+func (t *Timer) init() {
+	t.cancelC = make(chan bool)
+	t.restartC = make(chan bool)
+	t.pauseC = make(chan bool)
+	t.resumeC = make(chan bool)
 }
 
-func (t *countdownTimer) Run() {
+func (t *Timer) Run() {
+	t.init()
 	t.Paused = false
+
 	tick := time.NewTicker(time.Second)
 	for t.RemainingSeconds > 0 {
 		select {
@@ -79,33 +73,33 @@ func (t *countdownTimer) Run() {
 	}
 }
 
-func (t *countdownTimer) Cancel() {
+func (t *Timer) Cancel() {
 	t.unpause()
 	t.cancelC <- true
 }
 
-func (t *countdownTimer) Restart() {
+func (t *Timer) Restart() {
 	t.unpause()
 	t.restartC <- true
 }
 
-func (t *countdownTimer) Pause() {
+func (t *Timer) Pause() {
 	t.Paused = true
 	t.pauseC <- true
 }
 
-func (t *countdownTimer) Resume() {
+func (t *Timer) Resume() {
 	t.unpause()
 }
 
-func (t *countdownTimer) unpause() {
+func (t *Timer) unpause() {
 	if t.Paused {
 		t.resumeC <- true
 		t.Paused = false
 	}
 }
 
-func (t *countdownTimer) Remaining() (hour, min, sec int) {
+func (t *Timer) Remaining() (hour, min, sec int) {
 	return clockFromSeconds(t.RemainingSeconds)
 }
 

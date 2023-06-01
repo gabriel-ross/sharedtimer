@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *CountdownTimerConfig) Bind(r *http.Request) error {
+func (c *TimerConfig) Bind(r *http.Request) error {
 	var err error
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
