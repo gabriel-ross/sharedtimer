@@ -13,7 +13,7 @@ timerID (PK): uuid
 name: string
 initialSeconds: int64
 remainingSeconds: int64
-paused: bool
+isRunning: bool
 owner: FK(Users(userID))
 
 ## Table: EditAccess

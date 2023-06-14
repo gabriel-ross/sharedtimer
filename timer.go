@@ -23,12 +23,9 @@ type Timer struct {
 	Name             string    `json:"name"`
 	InitialSeconds   int64     `json:"initialSeconds"`
 	RemainingSeconds int64     `json:"remainingSeconds"`
-	Paused           bool      `json:"paused"`
+	IsRunning        bool      `json:"isRunning"`
 	cnf              TimerConfig
-	cancelC          chan bool
-	restartC         chan bool
-	pauseC           chan bool
-	resumeC          chan bool
+	stopC            chan bool
 }
 
 func NewTimer(cnf TimerConfig) Timer {
@@ -37,36 +34,25 @@ func NewTimer(cnf TimerConfig) Timer {
 		Name:             cnf.Name,
 		InitialSeconds:   secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
 		RemainingSeconds: secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
-		Paused:           false,
+		IsRunning:        false,
 		cnf:              cnf,
-		cancelC:          make(chan bool),
-		restartC:         make(chan bool),
-		pauseC:           make(chan bool),
-		resumeC:          make(chan bool),
+		stopC:            make(chan bool),
 	}
 }
 
 func (t *Timer) init() {
-	t.cancelC = make(chan bool)
-	t.restartC = make(chan bool)
-	t.pauseC = make(chan bool)
-	t.resumeC = make(chan bool)
+	t.stopC = make(chan bool)
 }
 
 func (t *Timer) Run() {
 	t.init()
-	t.Paused = false
+	t.IsRunning = true
 
 	tick := time.NewTicker(time.Second)
 	for t.RemainingSeconds > 0 {
 		select {
-		case <-t.cancelC:
+		case <-t.stopC:
 			return
-		case <-t.restartC:
-			t.RemainingSeconds = t.InitialSeconds
-		case <-t.pauseC:
-			<-t.resumeC
-		case <-t.resumeC: // dump redundant resume calls
 		case <-tick.C:
 			t.RemainingSeconds--
 		}
@@ -74,28 +60,30 @@ func (t *Timer) Run() {
 }
 
 func (t *Timer) Cancel() {
-	t.unpause()
-	t.cancelC <- true
+	if t.IsRunning {
+		t.stopC <- true
+	}
+	t.RemainingSeconds = t.InitialSeconds
 }
 
 func (t *Timer) Restart() {
-	t.unpause()
-	t.restartC <- true
+	t.RemainingSeconds = t.InitialSeconds
+	if t.IsRunning {
+		t.stopC <- true
+		t.Run()
+	}
 }
 
 func (t *Timer) Pause() {
-	t.Paused = true
-	t.pauseC <- true
+	if t.IsRunning {
+		t.stopC <- true
+		t.IsRunning = false
+	}
 }
 
 func (t *Timer) Resume() {
-	t.unpause()
-}
-
-func (t *Timer) unpause() {
-	if t.Paused {
-		t.resumeC <- true
-		t.Paused = false
+	if !t.IsRunning {
+		t.Run()
 	}
 }
 

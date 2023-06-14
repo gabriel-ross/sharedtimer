@@ -68,8 +68,8 @@ func (cl *PostgresClient) DeleteUser(id string) error {
 }
 
 func (cl *PostgresClient) CreateTimer(timer Timer, ownerID string) error {
-	queryStr := "INSERT INTO \"Timers\"(\"timerID\" \"name\" \"initialSeconds\" \"remainingSeconds\" \"paused\" \"ownerID\") VALUES($1 $2 $3 $4 $5 $6)"
-	_, err := cl.db.Exec(queryStr, timer.Id, timer.Name, timer.InitialSeconds, timer.RemainingSeconds, timer.Paused, ownerID)
+	queryStr := "INSERT INTO \"Timers\"(\"timerID\" \"name\" \"initialSeconds\" \"remainingSeconds\" \"isRunning\" \"ownerID\") VALUES($1 $2 $3 $4 $5 $6)"
+	_, err := cl.db.Exec(queryStr, timer.Id, timer.Name, timer.InitialSeconds, timer.RemainingSeconds, timer.IsRunning, ownerID)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (cl *PostgresClient) CreateTimer(timer Timer, ownerID string) error {
 func (cl *PostgresClient) GetTimer(id uuid.UUID) (Timer, error) {
 	var t Timer
 	queryStr := "SELECT * FROM \"Timers\" WHERE timerID=$1"
-	err := cl.db.QueryRow(queryStr, id).Scan(&t.Id, &t.Name, &t.InitialSeconds, &t.RemainingSeconds, &t.Paused)
+	err := cl.db.QueryRow(queryStr, id).Scan(&t.Id, &t.Name, &t.InitialSeconds, &t.RemainingSeconds, &t.IsRunning)
 	if err != nil {
 		return Timer{}, err
 	}
