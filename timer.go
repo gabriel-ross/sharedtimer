@@ -64,13 +64,17 @@ func (t *Timer) Cancel() {
 		t.stopC <- true
 	}
 	t.RemainingSeconds = t.InitialSeconds
+	t.IsRunning = false
 }
 
+// Restart resets the Timer's RemainingSeconds equal to its InitialSeconds and
+// runs the timer in a go func. For extrenal go func management use Cancel()
+// and Run() manually.
 func (t *Timer) Restart() {
 	t.RemainingSeconds = t.InitialSeconds
 	if t.IsRunning {
 		t.stopC <- true
-		t.Run()
+		go t.Run()
 	}
 }
 
@@ -78,12 +82,6 @@ func (t *Timer) Pause() {
 	if t.IsRunning {
 		t.stopC <- true
 		t.IsRunning = false
-	}
-}
-
-func (t *Timer) Resume() {
-	if !t.IsRunning {
-		t.Run()
 	}
 }
 

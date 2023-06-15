@@ -14,11 +14,10 @@ func (svr server) Routes() chi.Router {
 			r.Patch("/", svr.handleUpdateTimer())
 			r.Delete("/", svr.handleDeleteTimer())
 
-			r.Put("/start", svr.handleStartTimer())
+			r.Put("/run", svr.handleRunTimer())
 			r.Put("/cancel", svr.handleCancelTimer())
 			r.Put("/restart", svr.handleRestartTimer())
 			r.Put("/pause", svr.handlePauseTimer())
-			r.Put("/resume", svr.handleResumeTimer())
 		})
 	})
 

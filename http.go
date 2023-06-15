@@ -101,7 +101,7 @@ func (svr *server) handleDeleteTimer() http.HandlerFunc {
 	}
 }
 
-func (svr *server) handleStartTimer() http.HandlerFunc {
+func (svr *server) handleRunTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		id, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -177,26 +177,6 @@ func (svr *server) handlePauseTimer() http.HandlerFunc {
 		}
 
 		go timer.Pause()
-		w.WriteHeader(http.StatusNoContent)
-	}
-}
-
-func (svr *server) handleResumeTimer() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		timer, exists := svr.timers[id]
-		if !exists {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
-		go timer.Resume()
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

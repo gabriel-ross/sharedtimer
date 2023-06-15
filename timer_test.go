@@ -1,6 +1,7 @@
 package sharedtimer
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -16,6 +17,7 @@ const (
 
 // Expected run time: ~6 seconds
 func TestTimer(t *testing.T) {
+	fmt.Printf("running timer test. expected time: %d seconds\n", 6)
 	timer := NewTimer(TimerConfig{
 		Hours:   hours,
 		Minutes: minutes,
@@ -23,9 +25,7 @@ func TestTimer(t *testing.T) {
 	})
 	secondsElapsed := 0
 
-	go func() {
-		timer.Run()
-	}()
+	go timer.Run()
 
 	var _, _, secs int
 
@@ -38,7 +38,7 @@ func TestTimer(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	assertApproximateEqual(t, seconds-secondsElapsed, secs)
 
-	timer.Resume()
+	go timer.Run()
 	secondsElapsed += 2
 	time.Sleep(2 * time.Second)
 	_, _, secs = timer.Remaining()
@@ -48,6 +48,10 @@ func TestTimer(t *testing.T) {
 	secondsElapsed = 1
 	time.Sleep(time.Second)
 	assertApproximateEqual(t, seconds-secondsElapsed, secs)
+
+	timer.Cancel()
+	assert.Equal(t, timer.InitialSeconds, timer.RemainingSeconds)
+	assert.False(t, timer.IsRunning)
 }
 
 func assertApproximateEqual(t *testing.T, expected, actual int) bool {

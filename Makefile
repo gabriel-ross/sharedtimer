@@ -6,3 +6,6 @@ tauri-up:
 	
 npm-install:
 	npm install
+
+test:
+	go test -timeout 10s
