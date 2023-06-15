@@ -97,7 +97,16 @@ func (cl *PostgresClient) QueryTimers() error {
 	return nil
 }
 
-func (cl *PostgresClient) UpdateTimer() error {
+func (cl *PostgresClient) UpsertTimer(id string, timer Timer, ownerID string) error {
+	queryStr := "INSERT INTO \"Timers\"(\"timerID\" \"name\" \"initialSeconds\" \"remainingSeconds\" \"isRunning\" \"ownerID\") VALUES($1 $2 $3 $4 $5 $6) ON CONFLICT ON CONSTRAINT (timerID) DO UPDATE SET name=$1, initialSeconds=$2, remainingSeconds=$3, isRunning=$4, ownerID=$5 WHERE timerID = $1"
+	_, err := cl.db.Exec(queryStr, timer.Id, timer.Name, timer.InitialSeconds, timer.RemainingSeconds, timer.IsRunning, ownerID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cl *PostgresClient) UpdateTimer(id string, timer Timer) error {
 	return nil
 }
 
