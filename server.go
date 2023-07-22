@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/google/uuid"
 )
 
 type ServerConfig struct {
@@ -15,14 +14,14 @@ type ServerConfig struct {
 type server struct {
 	cnf    ServerConfig
 	router chi.Router
-	timers map[uuid.UUID]*Timer
+	timers map[string]*Timer
 }
 
 func NewServer(cnf ServerConfig) server {
 	s := server{
 		cnf:    cnf,
 		router: chi.NewRouter(),
-		timers: map[uuid.UUID]*Timer{},
+		timers: map[string]*Timer{},
 	}
 
 	s.router.Mount("/", s.Routes())

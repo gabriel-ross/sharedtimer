@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/google/uuid"
 )
 
 func (svr *server) handleCreateTimer() http.HandlerFunc {
@@ -37,9 +36,8 @@ func (svr *server) handleListTimers() http.HandlerFunc {
 
 func (svr *server) handleGetTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -57,8 +55,8 @@ func (svr *server) handleGetTimer() http.HandlerFunc {
 func (svr *server) handleUpdateTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -86,9 +84,8 @@ func (svr *server) handleUpdateTimer() http.HandlerFunc {
 
 func (svr *server) handleDeleteTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -103,9 +100,8 @@ func (svr *server) handleDeleteTimer() http.HandlerFunc {
 
 func (svr *server) handleRunTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -123,9 +119,8 @@ func (svr *server) handleRunTimer() http.HandlerFunc {
 
 func (svr *server) handleCancelTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -143,9 +138,8 @@ func (svr *server) handleCancelTimer() http.HandlerFunc {
 
 func (svr *server) handleRestartTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -163,9 +157,8 @@ func (svr *server) handleRestartTimer() http.HandlerFunc {
 
 func (svr *server) handlePauseTimer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		id, err := uuid.Parse(chi.URLParam(r, "id"))
-		if err != nil {
+		id := chi.URLParam(r, "id")
+		if id == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}

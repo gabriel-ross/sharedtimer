@@ -19,18 +19,18 @@ type TimerConfig struct {
 }
 
 type Timer struct {
-	Id               uuid.UUID `json:"id"`
-	Name             string    `json:"name"`
-	InitialSeconds   int64     `json:"initialSeconds"`
-	RemainingSeconds int64     `json:"remainingSeconds"`
-	IsRunning        bool      `json:"isRunning"`
+	Id               string `json:"id"`
+	Name             string `json:"name"`
+	InitialSeconds   int64  `json:"initialSeconds"`
+	RemainingSeconds int64  `json:"remainingSeconds"`
+	IsRunning        bool   `json:"isRunning"`
 	cnf              TimerConfig
 	stopC            chan bool
 }
 
 func NewTimer(cnf TimerConfig) Timer {
 	return Timer{
-		Id:               uuid.New(),
+		Id:               uuid.New().String(),
 		Name:             cnf.Name,
 		InitialSeconds:   secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
 		RemainingSeconds: secondsFromClock(cnf.Hours, cnf.Minutes, cnf.Seconds),
